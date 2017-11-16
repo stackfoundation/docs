@@ -1,20 +1,3 @@
-- title: Quick Start
-  url: /docs/quick-start
-  active:
-    - /docs
-  subItems:
-    - title: Running your first workflow
-      url: '#run'
-    - title: Accessing the Sandbox VM
-      url: '#vm'
-    - title: A look at workflow files
-      url: '#workflow'
-    - title: Service steps
-      url: '#services'
-    - title: Caching steps
-      url: '#caching'
-    - title: Previous step images
-      url: '#previous'
 - title: Overview
   url: /docs/overview
   subItems:
@@ -33,22 +16,8 @@
   subItems:
     - title: Workflow files
       url: '#files'
-    - title: Step script
-      url: '#script'
-    - title: Step image
-      url: '#image'
-    - title: Project source files
-      url: '#source'
-    - title: Previous step images
-      url: '#previous'
-    - title: Caching step images
-      url: '#cache'
-    - title: Parallel steps
-      url: '#parallel'
-    - title: Compound steps
-      url: '#compound'
-    - title: Step failure
-      url: '#failure'
+    - title: Run steps
+      url: '#run'
     - title: Services
       url: '#services'
     - title: Ports
@@ -57,17 +26,25 @@
       url: '#readiness'
     - title: Service health
       url: '#health'
-    - title: Volumes
-      url: '#volumes'
+    - title: Step image
+      url: '#image'
+    - title: Source files
+      url: '#source'
+    - title: Caching step images
+      url: '#cache'
     - title: Environment variables
       url: '#environment'
-    - title: Workflow variables
-      url: '#variables'
-    - title: Step validation
-      url: '#validation'
-    - title: Calling other workflows
-      url: '#calling'
-    - title: Calling generated workflows
+    - title: Volumes
+      url: '#volumes'
+    - title: Error handling
+      url: '#errors'
+    - title: Parallel steps
+      url: '#parallel'
+    - title: Compound steps
+      url: '#compound'
+    - title: Calling external workflows
+      url: '#external'
+    - title: Running generated workflows
       url: '#generated'
     - title: Using a Dockerfile
       url: '#dockerfile'
