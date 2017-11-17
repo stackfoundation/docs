@@ -1,69 +1,112 @@
-- title: Overview
-  url: /docs/overview
-  subItems:
-    - title: What is Sandbox?
-      url: '#sandbox'
-    - title: More reliable scripts
-      url: '#reuse'
-    - title: Docker-based workflows
-      url: '#workflows'
-    - title: Run straight from Git
-      url: '#repo'
-    - title: Architecture
-      url: '#architecture'
-- title: Getting Started
-  url: /docs/getting-started
-- title: Installing Sandbox
-  url: /docs/installing
-- title: Workflows
-  url: /docs/workflows
-  subItems:
-    - title: Workflow files
-      url: '#files'
-    - title: Run steps
+- items:
+  - title: Overview
+    url: /docs/overview
+    subItems:
+      - title: What is Sandbox?
+        url: '#sandbox'
+      - title: More reliable scripts
+        url: '#reuse'
+      - title: Docker-based workflows
+        url: '#workflows'
+      - title: Run straight from Git
+        url: '#repo'
+      - title: Architecture
+        url: '#architecture'
+  - title: Getting Started
+    url: /docs/getting-started
+  - title: Installing Sandbox
+    url: /docs/installing
+- title: Language specific
+  items:
+  - title: Quick start guide
+    url: '#quick-start'
+    subItems:
+    - title: Running your first workflow
       url: '#run'
-    - title: Services
+    - title: Accessing the Sandbox VM
+      url: '#vm'
+    - title: A look at workflow files
+      url: '#workflow'
+    - title: Service steps
       url: '#services'
-    - title: Ports
-      url: '#ports'
-    - title: Service readiness
-      url: '#readiness'
-    - title: Service health
-      url: '#health'
-    - title: Step image
-      url: '#image'
-    - title: Source files
-      url: '#source'
-    - title: Caching step images
-      url: '#cache'
-    - title: Environment variables
-      url: '#environment'
-    - title: Volumes
-      url: '#volumes'
-    - title: Error handling
-      url: '#errors'
-    - title: Parallel steps
-      url: '#parallel'
-    - title: Compound steps
-      url: '#compound'
-    - title: Calling external workflows
-      url: '#external'
-    - title: Running generated workflows
-      url: '#generated'
-    - title: Using a Dockerfile
-      url: '#dockerfile'
-- title: CLI (Command Line Interface)
-  url: /docs/cli
-  subItems:
-    - title: Running workflows
-      url: '#run'
-    - title: Initializing a project
-      url: '#init'
-    - title: Project layout
-      url: '#layout'
-    - title: Listing workflows
-      url: '#list'
-    - title: Cluster status and management
-      url: '#management'
-    - title: Using mirrors
-      url: '#mirrors'
+    - title: Caching steps
+      url: '#caching'
+    - title: Previous step images
+      url: '#previous'
+  - title: Webpack and Sandox
+    url: '#getting-started'
+    subItems:
+    - title: Project Setup
+      url: '#setup'
+    - title: Adding Sandbox to your project
+      url: '#add-sandbox'
+    - title: Running your first workflow
+      url: '#first-workflow'
+      alwaysOpen: true
+      subItems:
+        - title: Handling ports
+          url: '#first-workflow-ports'
+        - title: Running your app
+          url: '#first-workflow-running'
+        - title: Accessing the Sandbox VM
+          url: '#first-workflow-vm-ip'
+        - title: Using Cache
+          url: '#first-workflow-cache'
+        - title: Hot Reload
+          url: '#first-workflow-hot-reload'
+    - title: Adding a build workflow
+      url: '#build-workflow'
+- title: Reference
+  items:
+  - title: Workflows
+    url: /docs/workflows
+    subItems:
+      - title: Workflow files
+        url: '#files'
+      - title: Run steps
+        url: '#run'
+      - title: Services
+        url: '#services'
+      - title: Ports
+        url: '#ports'
+      - title: Service readiness
+        url: '#readiness'
+      - title: Service health
+        url: '#health'
+      - title: Step image
+        url: '#image'
+      - title: Source files
+        url: '#source'
+      - title: Caching step images
+        url: '#cache'
+      - title: Environment variables
+        url: '#environment'
+      - title: Volumes
+        url: '#volumes'
+      - title: Error handling
+        url: '#errors'
+      - title: Parallel steps
+        url: '#parallel'
+      - title: Compound steps
+        url: '#compound'
+      - title: Calling external workflows
+        url: '#external'
+      - title: Running generated workflows
+        url: '#generated'
+      - title: Using a Dockerfile
+        url: '#dockerfile'
+  - title: CLI (Command Line Interface)
+    url: /docs/cli
+    subItems:
+      - title: Running workflows
+        url: '#run'
+      - title: Initializing a project
+        url: '#init'
+      - title: Project layout
+        url: '#layout'
+      - title: Listing workflows
+        url: '#list'
+      - title: Cluster status and management
+        url: '#management'
+      - title: Using mirrors
+        url: '#mirrors'
