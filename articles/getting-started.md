@@ -10,27 +10,28 @@ If you have not already done so, first read the [Sandbox Overview](/docs/overvie
 
 To install Sandbox, see [Installing Sandbox](/docs/installing).
 
-### Language-specific quick starts
+### Language-specific guides
 
-Once you are familiar with Sandbox, take a look at the language-specific quick start guides:
+Once you have a high level overview of Sandbox, the language-specific quick start guides will help you get you up and running with Sandbox within a matter of minutes:
 
 * Javascript
-  - Quick start guide for Node.js
-  - Quick start for Webpack
+  - [Build and run Node.js apps](/docs/nodejs)
+  - [Hot reload with webpack](/docs/webpack)
 * Java
-  - Quick start guide for Maven-based projects
+  - [Build and run apps with Maven](/docs/maven)
+
+The guides also point to several sample Git repositories that you can explore.
 
 ### Docker & Kubernetes users
 
-If you are a regular Docker or Kubernetes user, learn how Sandbox complements these tools:
+If you are a regular Docker or Kubernetes, learn how Sandbox complements these tools:
 
-* Sandbox for Docker users
-* Sandbox for Kubernetes users
+* [Sandbox for Docker users](/docs/docker)
+* [Sandbox for Kubernetes users](/docs/kubernetes)
 
 ### Reference
 
-To go further with Sandbox, refer to the following:
+To go further with Sandbox, refer to the following reference docs:
 
-* [Workflows Reference](/docs/workflows)
-* [CLI Reference](/docs/cli)
-
+* [Workflows](/docs/workflows)
+* [CLI](/docs/cli)

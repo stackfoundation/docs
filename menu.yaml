@@ -16,12 +16,12 @@
     url: /docs/getting-started
   - title: Installing Sandbox
     url: /docs/installing
-- title: Language specific
+- title: Language-specific guides
   items:
   - title: Javascript
     subItems:
-    - title: Quick start guide
-      url: '#quick-start'
+    - title: Build and run Node.js apps
+      url: '/docs/nodejs'
       subItems:
       - title: Running your first workflow
         url: '#run'
@@ -35,8 +35,8 @@
         url: '#caching'
       - title: Previous step images
         url: '#previous'
-    - title: Webpack and Sandox
-      url: '#getting-started'
+    - title: Hot reload with webpack
+      url: '/docs/webpack-guide'
       subItems:
       - title: Project Setup
         url: '#setup'
@@ -58,6 +58,18 @@
             url: '#first-workflow-hot-reload'
       - title: Adding a build workflow
         url: '#build-workflow'
+  - title: Java
+    subItems:
+    - title: Build and run apps with Maven
+      url: /docs/maven
+- title: Deeper Dive
+  items:
+  - title: Sandbox bootstrapping
+    url: /docs/bootstrapping
+  - title: Sandbox for Docker users
+    url: /docs/docker
+  - title: Sandbox for Kubernetes users
+    url: /docs/kubernetes
 - title: Reference
   items:
   - title: Workflows
