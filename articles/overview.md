@@ -1,19 +1,18 @@
 ## What is Sandbox? [](#what)
 
-**StackFoundation Sandbox** is a free tool that allows you to _fully reproduce_ complex development tasks using Docker-based workflows. You can design a workflow that reproduces the development tasks that you perform regularly. This can include:
+**StackFoundation Sandbox** is a free tool that allows you to fully reproduce complex development tasks using Docker-based workflows that are multi-step, multi-language, and multi-platform. You can design a workflow that reproduces the development tasks that you perform regularly. This can include:
 
 *   Building your application
 *   Running unit tests, integration tests, functional tests, or any other automated tests
 *   Running your application in order to debug it, along with all of it's third-party dependencies (databases, etc.)
 *   Deploying your application somewhere
 
-Sandbox runs workflows that reproduce tasks that are multi-step, multi-language, and multi-platform.
-
 ## Why should I use Sandbox? [](#why)
 
 * **Reproduce complex tasks** - Sandbox runs workflows where each workflow step can run a Docker container. Because each step runs a Docker container, you 
 * **Multi-language, multi-platform** - Because each workflow step runs a Docker container, you can have each step run different languages, or platforms
 * **Full reproduciblity** - On a new machine, Sandbox installs everything necessary to run workflows, even Docker. That means you be sure that running a workflow fully reproduces
+* **Available upon checkout** - Sandbox is tiny (&lt;) by design so that it can be checked in to your Git repo together with your project, and your workflows. That allows anyone that checks out your project repo to be able to perform all development tasks immediately upon checkout. Because Sandbox reproduces everything, including the environment needed to run workflows, anyone that checks out your project has everything they need to work with it, without installing any other software.
 
 ## How do I use Sandbox? [](#use)
 

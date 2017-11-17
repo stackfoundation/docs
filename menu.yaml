@@ -13,6 +13,8 @@
       url: '#architecture'
 - title: Getting Started
   url: /docs/getting-started
+- title: Installing Sandbox
+  url: /docs/installing
 - title: Workflows
   url: /docs/workflows
   subItems:

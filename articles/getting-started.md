@@ -6,9 +6,9 @@ This page lists documentation that will help you get started with Sandbox.
 
 If you have not already done so, first read the [Sandbox Overview](/docs/overview).
 
-## Initializing a project with Sandbox
+## Installing Sandbox
 
-For an overview of adding Sandbox to a project, see [Intializing a project](/docs/init).
+To install Sandbox, see [Installing Sandbox](/docs/installing).
 
 ## Language-specific quick starts
 
