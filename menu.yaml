@@ -3,59 +3,61 @@
     url: /docs/overview
     subItems:
       - title: What is Sandbox?
-        url: '#sandbox'
-      - title: More reliable scripts
-        url: '#reuse'
-      - title: Docker-based workflows
-        url: '#workflows'
-      - title: Run straight from Git
-        url: '#repo'
-      - title: Architecture
-        url: '#architecture'
+        url: '#what'
+      - title: Why should I use Sandbox?
+        url: '#why'
+      - title: How do I use Sandbox?
+        url: '#use'
+      - title: How does Sandbox work?
+        url: '#how'
+      - title: How do I get started?
+        url: '#start'
   - title: Getting Started
     url: /docs/getting-started
   - title: Installing Sandbox
     url: /docs/installing
 - title: Language specific
   items:
-  - title: Quick start guide
-    url: '#quick-start'
+  - title: Javascript
     subItems:
-    - title: Running your first workflow
-      url: '#run'
-    - title: Accessing the Sandbox VM
-      url: '#vm'
-    - title: A look at workflow files
-      url: '#workflow'
-    - title: Service steps
-      url: '#services'
-    - title: Caching steps
-      url: '#caching'
-    - title: Previous step images
-      url: '#previous'
-  - title: Webpack and Sandox
-    url: '#getting-started'
-    subItems:
-    - title: Project Setup
-      url: '#setup'
-    - title: Adding Sandbox to your project
-      url: '#add-sandbox'
-    - title: Running your first workflow
-      url: '#first-workflow'
-      alwaysOpen: true
+    - title: Quick start guide
+      url: '#quick-start'
       subItems:
-        - title: Handling ports
-          url: '#first-workflow-ports'
-        - title: Running your app
-          url: '#first-workflow-running'
-        - title: Accessing the Sandbox VM
-          url: '#first-workflow-vm-ip'
-        - title: Using Cache
-          url: '#first-workflow-cache'
-        - title: Hot Reload
-          url: '#first-workflow-hot-reload'
-    - title: Adding a build workflow
-      url: '#build-workflow'
+      - title: Running your first workflow
+        url: '#run'
+      - title: Accessing the Sandbox VM
+        url: '#vm'
+      - title: A look at workflow files
+        url: '#workflow'
+      - title: Service steps
+        url: '#services'
+      - title: Caching steps
+        url: '#caching'
+      - title: Previous step images
+        url: '#previous'
+    - title: Webpack and Sandox
+      url: '#getting-started'
+      subItems:
+      - title: Project Setup
+        url: '#setup'
+      - title: Adding Sandbox to your project
+        url: '#add-sandbox'
+      - title: Running your first workflow
+        url: '#first-workflow'
+        alwaysOpen: true
+        subItems:
+          - title: Handling ports
+            url: '#first-workflow-ports'
+          - title: Running your app
+            url: '#first-workflow-running'
+          - title: Accessing the Sandbox VM
+            url: '#first-workflow-vm-ip'
+          - title: Using Cache
+            url: '#first-workflow-cache'
+          - title: Hot Reload
+            url: '#first-workflow-hot-reload'
+      - title: Adding a build workflow
+        url: '#build-workflow'
 - title: Reference
   items:
   - title: Workflows

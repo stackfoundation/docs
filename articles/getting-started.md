@@ -2,32 +2,32 @@
 
 This page lists documentation that will help you get started with Sandbox.
 
-## Overview
+### Overview
 
 If you have not already done so, first read the [Sandbox Overview](/docs/overview).
 
-## Installing Sandbox
+### Installing Sandbox
 
 To install Sandbox, see [Installing Sandbox](/docs/installing).
 
-## Language-specific quick starts
+### Language-specific quick starts
 
 Once you are familiar with Sandbox, take a look at the language-specific quick start guides:
 
-* Node.js 
-  - Quick start guide for NPM
+* Javascript
+  - Quick start guide for Node.js
   - Quick start for Webpack
 * Java
   - Quick start guide for Maven-based projects
 
-## Docker & Kubernetes users
+### Docker & Kubernetes users
 
 If you are a regular Docker or Kubernetes user, learn how Sandbox complements these tools:
 
 * Sandbox for Docker users
 * Sandbox for Kubernetes users
 
-## Reference
+### Reference
 
 To go further with Sandbox, refer to the following:
 
