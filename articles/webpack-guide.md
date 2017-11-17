@@ -198,12 +198,12 @@ steps:
 
 We are now setting up and using an image prepared with our installed packages as the base to our run step. Let's review the above changes in detail:
 
-- We've added a new step, called **Install Application**:
-  - It uses a `source` object, which defines an `include` property. It overrides the default behaviour of including all files, and defines **only the `package.json` file to be included**.
-  - It sets `cache` to true - While the image and included files are the same, it uses the cached reult instead of rebuilding each time. Because only `package.json` is included, only changes to this file will trigger the install step to rebuild.
-- We've changed our old step:
-  - It no longer has an `image` field, but rather a `step` field, set to the previous step, `Install application`. This is the image we had before, `node:8-alpine`, but with the **installed node_modules already included**.
-  - It also uses a `source` object, but now including all files, **except `node_modules`** - this is so as to not replace the build `node_modules` with any existing local one
+* We've added a new step, called **Install Application**:
+  * It uses a `source` object, which defines an `include` property. It overrides the default behaviour of including all files, and defines **only the `package.json` file to be included**.
+  * It sets `cache` to true - While the image and included files are the same, it uses the cached reult instead of rebuilding each time. Because only `package.json` is included, only changes to this file will trigger the install step to rebuild.
+* We've changed our old step:
+  * It no longer has an `image` field, but rather a `step` field, set to the previous step, `Install application`. This is the image we had before, `node:8-alpine`, but with the **installed node_modules already included**.
+  * It also uses a `source` object, but now including all files, **except `node_modules`** - this is so as to not replace the build `node_modules` with any existing local one
 
 When we run this workflow for the first time, it will install dependencies. However, any subsequent runs will skip this step and use a cached image instead.
 

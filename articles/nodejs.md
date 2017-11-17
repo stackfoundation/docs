@@ -1,6 +1,6 @@
 ## Quick Start
 
-{alert}This quick start guide will quickly introduce you to Sandbox, and get you started running workflows in a matter of minutes.
+{className:alert}This quick start guide will quickly introduce you to Sandbox, and get you started running workflows in a matter of minutes.
 
 You can also watch a short [Introduction to Sandbox](https://www.youtube.com/watch?v=RwMl-vy-1Vs) video, which covers many of the same concepts as this quick start guide.
 
