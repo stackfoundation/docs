@@ -11,6 +11,8 @@
       url: '#repo'
     - title: Architecture
       url: '#architecture'
+- title: Getting Started
+  url: /docs/getting-started
 - title: Workflows
   url: /docs/workflows
   subItems:
