@@ -1,10 +1,10 @@
-# Getting Started with Sandbox
+# Getting started
 
 This page lists documentation that will help you get started with Sandbox.
 
 ### Overview
 
-If you have not already done so, first read the [Sandbox Overview](/docs/overview).
+If you have not already done so, first read the [Sandbox overview](/docs/overview).
 
 ### Installing Sandbox
 

@@ -1,6 +1,13 @@
-# Quick Start for Docker Users
+# Sandbox for Docker users
 
-If you are already a Docker user, Sandbox will make your life with Docker even easier. This quick start guide is designed to show Docker users how they can use Sandbox to take Docker further for daily development tasks like building applications, and running unit and functional tests.
+If you are already a Docker user, Sandbox will make your life with Docker even easier. This guide is designed to show Docker users how they can use Sandbox to take Docker further for daily development tasks like building applications, and running unit and functional tests.
+
+We'll start by showing how Sandbox provides some additional conveniences in dealing with Docker in 3 specific areas:
+* Building from source
+* Mounting volumes
+* Health checks for services
+
+Then, we'll see how taken together, these additional conveniences allow you to think differently about how you use Docker for daily development tasks.
 
 ## Building from source
 
@@ -11,7 +18,7 @@ FROM node:8-alpine
 RUN apk update && apk add git
 ```
 
-You can see that while the official Node.js image - `node:8-alpine` - almost servces our purpose, we had to add git to it because one of the package dependencies in the Node.js application needs it.
+You can see that while the official Node.js image - `node:8-alpine` - almost serves our purpose, we had to add Git to it because one of the package dependencies in the Node.js application needs it.
 
 Because you now have a custom Dockerfile, you will have to first build a Docker image with your Dockerfile before you can run a container with it. When other members of your team need to use the same Dockerfile, they will also have to build the image first before they can run a container with it. Of course, you have a few options to make this simpler. You may push the image to a registry but if you use proprietary code or tools in the image, you will first want to setup a private registry to push your images to. Alternatively, you can write some scripts that take your Dockerfile and perform a `docker build` before performing a `docker run`.
 
@@ -28,7 +35,7 @@ steps:
      script: ${args}
 ```
 
-With that workflow saved as a YAML file called `node.yml`, we can issue a simple command to run the workflow `sbox run node npm install`. The Sandbox CLI will build the image from the Dockerfile as the first step, and then pass all arguments after the workflow name (in this case, that's `npm install`) to the second step. You can see we use a variable placeholder called `${args}` in order to execute whatever arguments were passed as the script for the second step.
+With that workflow saved as a YAML file called `node.yml`, we can issue a simple command to run the workflow `sbox run node npm install`. The Sandbox CLI will build the image from the Dockerfile as the first step, and then pass all arguments after the workflow name (in this case, that's `npm install`) to the second step. You can see we use a variable placeholder called `${args}` in order to take the arguments, and use them to define the script to run for the second step.
 
 An abridged version of the console output when running this workflow looks like this:
 ```
@@ -36,7 +43,7 @@ ravi@dev:~/demo1$ ./sbox run node npm install
 Building image for step Node.js environment:
 Step 1 : FROM node:8-alpine
 ...
-Build image for step 1:
+Building image for step 1:
 ...
 Running step 1:
 [Step 1] npm install

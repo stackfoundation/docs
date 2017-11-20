@@ -12,7 +12,7 @@
         url: '#how'
       - title: How do I get started?
         url: '#start'
-  - title: Getting Started
+  - title: Getting started
     url: /docs/getting-started
   - title: Installing Sandbox
     url: /docs/installing
