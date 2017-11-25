@@ -1,30 +1,36 @@
 # Workflows
-Sandbox runs workflows that are comprised of a series of steps, where each step runs a script within a Docker container. Because scripts are run within a Docker container, they have a predictable and well-known environment in which to run, and thus run consistently. Workflows allow you to consistently reproduce all your development tasks.
+Sandbox runs workflows that are comprised of a series of steps, where each step can run a script within a Docker container. 
+
+This document is intended to serve as both a manual and reference for workflows. In order to use it as a manual, we recommend reading the document from start to finish, reading the sections in order. Alternatively, if you want to use the document as a reference, we recommend starting at the [YAML index](#index) to quickly jump to the relevant section.
 
 ## Workflow files [](#files)
 Workflows are specified as YAML files, with a `.yml` extension, and generally stored within a folder called `workflows`, within a project. Workflows can be manually edited using any text editor (since they are just YAML files). Workflows are run using the [Sandbox CLI](/docs/cli).
 
-Workflow files have the following keys at the top level:
+At a minimum, every workflow must define a sequence of steps:
+
+```yaml
+steps:
+ - service:
+     image: mongo:jessie
+     ...
+ - run:
+     image: node:8-alpine
+     ...
+ - service:
+     image: node:8-alpine
+```
+
+Along with `steps`, workflows can have the following keys at the top level:
 
 | Key                  | Type                 | Description                              |
 | -------------------- | -------------------- | ---------------------------------------- |
-| `steps` *(Required)* | Sequence of mappings | Steps that make up the workflow - see [steps](#steps) |
 | `ignoreErrors `      | Mapping              | Defines global error handling - see [error handling](#errors) |
+| `steps` *(Required)* | Sequence of mappings | Steps that make up the workflow - see [steps](#steps) |
 | `variables`          | Sequence of mappings | Global variables for the workflow - see [variables](#variables) |
 
-## Steps [](#steps)
+## Steps (`steps`) [](#steps)
 
-Each step within a workflow should have *exactly one* of the following keys defined, and the key defines that step's type:
-
-| Key         | Type    | Description                              |
-| ----------- | ------- | ---------------------------------------- |
-| `run`       | Mapping | Step that runs from start to finish - see [run steps](#run) |
-| `service`   | Mapping | Step that runs a long-running service - see [services](#services) |
-| `compound`  | Mapping | Step that waits for sub-steps to be ready or complete - see [compound steps](#compound) |
-| `external`  | Mapping | Step that runs an external workflow - see [calling external workflows](#external) |
-| `generator` | Mapping | Step that generates a workflow and runs that generated workflow - see [running generated workflows](#generated) |
-
-The following example shows how steps of different types are specified:
+The steps that make up a workflow can have different types, determined by the top-level key used for each step. Here is an example that shows how steps of different types are specified:
 
 ```yaml
 steps:
@@ -41,41 +47,172 @@ steps:
      image: node:8-alpine
 ```
 
-## Run steps [](#run)
+As you can see, each step within a workflow should have *exactly one* of the following keys defined, and the key defines that step's type:
 
-Run steps are the most basic type of step in a workflow. For each run step, Sandbox creates and runs a Docker container, and runs a script inside that container. Run steps are configured using the following keys:
+| Key         | Type    | Description                              |
+| ----------- | ------- | ---------------------------------------- |
+| `compound`  | Mapping | Step that waits for sub-steps to be ready or complete - see [compound steps](#compound) |
+| `external`  | Mapping | Step that runs an external workflow - see [calling external workflows](#external) |
+| `generator` | Mapping | Step that generates a workflow and runs that generated workflow - see [running generated workflows](#generated) |
+| `run`       | Mapping | Step that runs from start to finish - see [run steps](#run) |
+| `service`   | Mapping | Step that runs a long-running service - see [services](#services) |
+
+## Run steps (`run`) [](#run)
+
+Run steps are the most basic type of step in a workflow. For each run step, Sandbox creates and runs a Docker container, and runs a script inside that container. The following example shows a simple workflow with a single run step, which runs `npm install` in a Node.js container:
+
+```yaml
+steps:
+ - run:
+     image: node:8-alpine
+     script: npm install
+```
+
+Along with the `image` and `script` keys shown in the example, run steps can be configured using the following keys:
 
 | Key             | Type                 | Description                              |
 | --------------- | -------------------- | ---------------------------------------- |
-| `name`          | String               | A name for the step                      |
-| `ignoreErrors ` | Mapping              | Defines how errors are handled for the step - see [error handling](#errors) |
-| `image`         | String               | Docker image to use as base image for the step - see [step image](#image) |
-| `step`          | String               | The name of a previous step in the workflow, whose final state to use as the base image for the step - see [step image](#image) |
-| `source`        | Mapping              | Configure source file availability for the step - see [source files](#source) |
-| `script`        | String               | The actual content of the script to run inside the Docker container created for the step |
 | `cache`         | Boolean              | Whether to cache the step image (defaults to `false`) - see [caching step images](#cache) |
-| `parallel`      | Boolean              | Whether to run the step in parallel (defaults to `false`) - see [parallel steps](#parallel) |
-| `environment`   | Sequence of mappings | Environment variables to make available to the step's container - see [environment variables](#environment) |
-| `volumes`       | Sequence of mappings | Volumes to mount on the step container - see [volumes](#volumes) |
 | `dockerfile`    | String               | Path to a Dockerfile to use for the step - see [using Dockerfiles](#dockerfiles) |
+| `environment`   | Sequence of mappings | Environment variables to make available to the step's container - see [environment variables](#environment) |
+| `ignoreErrors ` | Mapping              | Defines how errors are handled for the step - see [error handling](#errors) |
+| `image`         | String               | Docker image to use as base image for the step - see [step image](#image) |
+| `name`          | String               | A name for the step                      |
+| `parallel`      | Boolean              | Whether to run the step in parallel (defaults to `false`) - see [parallel steps](#parallel) |
+| `script`        | String               | The actual content of the script to run inside the Docker container created for the step |
+| `source`        | Mapping              | Configure source file availability for the step - see [source files](#source) |
+| `step`          | String               | The name of a previous step in the workflow, whose final state to use as the base image for the step - see [step image](#image) |
+| `volumes`       | Sequence of mappings | Volumes to mount on the step container - see [volumes](#volumes) |
 
-## Services [](#services)
+## Step image (`image` and `step`) [](#image)
 
-Service steps are for creating long-running services. Sandbox will not wait for service steps to complete before continuing to the next step. However, it will wait for the service to be ready (see [service readiness](#readiness)) before continuing. Service steps are configured using the following keys:
+For each `run`, `service`, and `generator` step that Sandbox runs, it first starts by building a Docker image for that step. The base for that image can be specified using either the `image` or the `step` key. Note that for `run`, `service`, and `generator` steps, one of the two keys *must* be used to specify the base, unless a Dockerfile has been defined for the step using the `dockerfile` key (see [using Dockerfiles](#dockerfiles)).
+
+If you specify a Docker image with the `image` key, you can use the `<repository>:<tag>` format to specify any public image available on [Docker Hub](https://hub.docker.com/explore/). We recommend that you use official Docker images where possible.
+
+Here is a basic example of a step that uses an official `maven` image:
+
+```yaml
+steps:
+ - run:
+     image: maven:latest
+     script: |-
+       mvn clean install
+```
+
+Instead, if you specify the name of a previous step in the workflow using the `step` key, that previous step must have already completed before it's final state can be used as an image. Sandbox will [commit](https://docs.docker.com/engine/reference/commandline/commit/) the previous step container's ending state as a new image, and use that image as the base for your step. An example of where you might choose to do this is if you compile and build binaries for your application in one step, and then want to use those binaries to run your application in a subsequent step. Here is an example of using `step` as the base image:
+
+```yaml
+steps:
+ - run:
+     name: Compile application
+     image: maven:latest
+     script: |-
+       mvn clean install
+ - service:
+     name: Run application
+     step: Compile application
+     script: |-
+       mvn spring-boot:run
+```
+
+When running this example, after the Docker container for the `Compile application` step finishes, Sandbox will commit the container's final state as an image. This image is then used as the base image for the Docker container for the `Run application` step.
+
+## Source files (`source`) [](#source)
+
+When building the image for a `run`, `service`, or `generator` step, Sandbox starts with a base image (as descripted in [step image](#image)). On top of that base, Sandbox adds all source files within the workflow's project directory to the image built for the step by default. You can change which files Sandbox adds to the image - for example, you can tell Sandbox to completely omit all source files from the image:
+
+```yaml
+steps:
+ - service:
+     image: mongo:jessie
+     source:
+       omit: true
+```
+
+Because the above example runs a MongoDB container, it may not make sense to add any project source files, and so it omits all of them. 
+
+Along with `omit`, there are many other keys in `source` that can be used to customize how source files are added to the image:
+
+| Key            | Type                | Description                              |
+| -------------- | ------------------- | ---------------------------------------- |
+| `dockerignore` | String              | A path (relative to the project directory) to a file which contains rules for source files to ignore (defaults to `.dockerignore`) |
+| `exclude`      | Sequence of strings | A list of file patterns that specify files to exclude from the step image |
+| `include`      | Sequence of strings | A list of file patterns that specify files to include in the step image |
+| `location`     | String              | Set the location where source files are added to the step image (defaults to `/app`) |
+| `omit`         | Boolean             | Whether to omit all source files, so that no source files are added to the image built for the step (defaults to `false`) |
+
+Note that the file specified by the `dockerignore` key should contain ignore rules in the format specified by  [Docker's documentation on .dockerignore files](https://docs.docker.com/engine/reference/builder/#dockerignore-file). That means that an existing `.dockerignore` file should be honored when building a step image. However, the `dockerignore` key allows you to use a different file for each step.
+
+The syntax for the `include` and `exclude` patterns are the same as [Go's `filepath.Match` patterns](https://golang.org/pkg/path/filepath/#Match). If you use these properties, only the source files that match the include patterns are selected first for inclusion. From this set, any files matched by any of the exclude patterns are excluded to arrive at the final list of files to add to the step image.
+
+The simple example below shows the use of `include` to add only the `package.json` and `package-lock.json` files to the step image:
+
+```yaml
+steps:
+ - run:
+     image: node:8.4.0
+     source:
+       include:
+        - package.json
+        - package-lock.json
+     script: |-
+       npm install
+       npm run build
+```
+
+If you use the `dockerignore` key for a particular step, you cannot also use the `include` and `exclude` keys for the same step. You *must* use one or the other.
+
+It is important to note that because source files are added to the image built for the step, changes made to these files within the step container only affect the container's file system. That means changes to these files will not be reflected to the actual source files in your project directory. In order to make changes to your project files from within a step container, you will need to use [volumes](#volumes).
+
+## Using Dockerfiles (`dockerfile`) [](#dockerfiles)
+
+In certain scenarios, you may want to use your own Dockerfile to define a step. Sandbox allows you to do so using the `dockerfile` property. Note that if you define a step using `dockerfile`, you cannot use the `image`, `step`, or`script` properties for that step. All other keys normally available for that step type are still available.
+
+Here is a simple example of a step that uses the `build-Dockerfile` (note that paths are relative to the project directory):
+
+```yaml
+steps:
+ - run:
+     name: Build & run application
+     dockerfile: build-Dockerfile
+```
+
+## Services (`service`) [](#services)
+
+Service steps are for creating long-running services. Sandbox will wait for service steps to to be ready (see [service readiness](#readiness)) before continuing to the next step. 
+
+Here is a simple example of a Java web application started as a service:
+
+```yaml
+steps:
+ - service:
+     image: maven:3.5.2-jdk-8-alpine
+     script: |-
+       mvn spring-boot:run
+     readiness:
+      - http:
+          port: 8080
+          path: /
+```
+
+The HTTP readiness check defined here will cause Sandbox to wait till the check to be successful before proceeding to the next step. Once started, the service will continue to run till the workflow run is interrupted.
+
+Along with the keys shown in the example above, service steps can be configured using the following keys:
 
 | Key             | Type                 | Description                              |
 | --------------- | -------------------- | ---------------------------------------- |
-| `name`          | String               | A name for the step                      |
+| `dockerfile`    | String               | Path to a Dockerfile to use for the step - see [using Dockerfiles](#dockerfiles) |
+| `environment`   | Sequence of mappings | Environment variables to make available to the step's container - see [environment variables](#environment) |
 | `ignoreErrors ` | Mapping              | Defines how errors are handled for the step - see [error handling](#errors) |
 | `image`         | String               | Docker image to use as base image for the step - see [step image](#image) |
-| `step`          | String               | The name of a previous step in the workflow, whose final state to use as the base image for the step - see [step image](#image) |
-| `source`        | Mapping              | Configure source file availability for the step - see [source files](#source) |
-| `script`        | String               | The actual content of the script to run inside the Docker container created for the step |
+| `name`          | String               | A name for the step                      |
 | `ports`         | Sequence of mappings | Defines the ports for the service - see [ports](#ports) |
 | `readiness`     | Mapping              | The readiness check for the service - see [service readiness](#readiness) |
-| `environment`   | Sequence of mappings | Environment variables to make available to the step's container - see [environment variables](#environment) |
+| `script`        | String               | The actual content of the script to run inside the Docker container created for the step |
+| `source`        | Mapping              | Configure source file availability for the step - see [source files](#source) |
+| `step`          | String               | The name of a previous step in the workflow, whose final state to use as the base image for the step - see [step image](#image) |
 | `volumes`       | Sequence of mappings | Volumes to mount on the step container - see [volumes](#volumes) |
-| `dockerfile`    | String               | Path to a Dockerfile to use for the step - see [using Dockerfiles](#dockerfiles) |
 
 ## Ports [](#ports)
 
@@ -232,67 +369,6 @@ steps:
 ```
 
 As you can see, the `health` check has the same structure as the `readiness` check. The difference is in how Sandox uses the checks: while the `readiness` check is used to initially determine when a service is ready, the `health` check is used to ensure that a long-running service continues to be healthy. If the service becomes unhealthy, Sandbox will automatically restart the service so that it continues to be available.
-
-## Step image [](#image)
-
-When running a workflow, Sandbox first builds an image for each `run`, `service`, and `generator` step. The base for that image can be specified using either the `image` or the `step` key. Note that for `run`, `service`, and `generator` steps, one of the two keys *must* be used to specify the base, unless a Dockerfile is defined for the step using the `dockerfile` key (see [using Dockerfiles](#dockerfiles)).
-
-If you specify a Docker image with the `image` key, you can use the `<repository>:<tag>` format to specify any public image available on [Docker Hub](https://hub.docker.com/explore/). We recommend that you use official Docker images where possible.
-
-If you specify the name of a previous step using the `step` key, note that that previous step must have already completed before it's final state can be used as an image. Sandbox will [commit](https://docs.docker.com/engine/reference/commandline/commit/) the previous step container's ending state as a new image, and use that image as the base for your step. An example of where you might choose to do this is if you compile and build binaries for your application in one step, and then want to use those binaries to run your application in a subsequent step. Here is an example of using `step` as the base image:
-
-```yaml
-steps:
- - run:
-     name: Compile application
-     image: maven:latest
-     script: |-
-       mvn clean install
- - service:
-     name: Run application
-     step: Compile application
-     script: |-
-       mvn spring-boot:run
-```
-
-When running this example, after the Docker container for the `Compile application` step finishes, Sandbox will commit the container's final state as an image. This image is then used as the base image for the Docker container for the `Run application` step.
-
-## Source files [](#source)
-
-When building the image for a `run`, `service`, or `generator` step, Sandbox starts with a base image (see [step image](#image)). On top of that base, Sandbox adds all source files within the workflow's project directory to the image for the step. The keys defined in `source` can be used to customize how source files are added to the image:
-
-| Key            | Type                | Description                              |
-| -------------- | ------------------- | ---------------------------------------- |
-| `omit`         | Boolean             | Whether to omit all source files, so that no source files are added to the image built for the step (defaults to `false`) |
-| `location`     | String              | Set the location where source files are added to the step image (defaults to `/app`) |
-| `dockerignore` | String              | A path (relative to the project directory) to a file which contains rules for source files to ignore (defaults to `.dockerignore`) |
-| `include`      | Sequence of strings | A list of file patterns that specify files to include in the step image |
-| `exclude`      | Sequence of strings | A list of file patterns that specify files to exclude from the step image |
-
-Note that the file specified by the `dockerignore` key should contain ignore rules in the format specified by  [Docker's documentation on .dockerignore files](https://docs.docker.com/engine/reference/builder/#dockerignore-file). That means that an existing `.dockerignore` file should be honored when building a step image. However, the `dockerignore` key allows you to use a different file for each step.
-
-The syntax for the `include` and `exclude` patterns are the same as [Go's `filepath.Match` patterns](https://golang.org/pkg/path/filepath/#Match). If you use these properties, only the source files that match the include patterns are selected first for inclusion. From this set, any files matched by any of the exclude patterns are excluded to arrive at the final list of files to add to the step image.
-
-The simple example below includes shows the use of `include` to add only the `package.json` and `package-lock.json`files to the step image:
-
-```yaml
-steps:
- - run:
-     image: node:8.4.0
-     source:
-       include:
-        - package.json
-        - package-lock.json
-     script: |-
-       npm install
-       npm run build
-```
-
-
-
-If you use the `dockerignore` key for a particular step, you cannot also use the `include` and `exclude` keys for the same step. You *must* use one or the other.
-
-It's important to note that because source files are added to the image of the container used for the step, changes made to these files within the step container only affect the container's file system. That means changes to these files will not be reflected to the actual source files in your project directory. In order to make changes to your project files from within a step container, you will need to use [volumes](#volumes).
 
 ## Caching step images [](#cache)
 
@@ -519,19 +595,85 @@ steps:
 
 In this example, the `workflow-generator.sh` script within the project source directory is expected to generate a workflow, which will then be run by Sandbox. Note that most of the other properties available in a step that executes a script are available to steps that generate workflows. In this example, the `environment` property is used to set environment variables on the Docker container in which the generator script is run.
 
-Sandbox expects the generator script to write the generated workflow YAML to stdout. The generated YAML should be preceeded with a line that has the text `workflow {` and followed by a line with the text `}`. Sandbox will consider all lines in between those marking lines as the YAML content of the workflow.
+Sandbox expects the generator script to write the generated workflow YAML to stdout. The generated YAML should be preceded with a line that has the text `workflow {` and followed by a line with the text `}`. Sandbox will consider all lines in between those marking lines as the YAML content of the workflow.
 
 The rules for variables that apply to calling other workflows (see [Calling other workflows](http://localhost:8080/#!/#calling)) also apply when Sandbox runs a generated workflow. In particular, the `excludeVariables` can be used to exclude variables copied between the workflow boundaries.
 
-## Using Dockerfiles [](#dockerfiles)
-
-In certain scenarios, you may want to use your own Dockerfile for a step. Sandbox allows you to do so using the `dockerfile` property. Note that if you define a step using `dockerfile`, you cannot use the `image`, `step`, or`script` properties for that step. All other keys normally available for that step type are still available.
-
-Here is a simple example of a step that uses the `build-Dockerfile` (note that paths are relative to the project directory):
+## YAML index [](#index)
 
 ```yaml
-steps:
- - run:
-     name: Build & run application
-     dockerfile: build-Dockerfile
+ignoreErrors: # See [Error handling](#errors)
+  failure:
+  missing:
+  validation:
+steps: # See [Steps](#steps)
+ - compound: # See [Compound steps](#compound)
+     ignoreErrors: # See [Error handling](#errors)
+       failure:
+       missing:
+       validation:
+     name:
+     steps:
+ - external: # See [Running external workflows](#external)
+     ignoreErrors: # See [Error handling](#errors)
+       failure:
+       missing:
+       validation:
+     name:
+     parallel: # See [Parallel steps](#parallel)
+ - generator: # See [Running generated workflows](#generator)
+     dockerfile: # See [Using Dockerfiles](#dockerfiles)
+     ignoreErrors: # See [Error handling](#errors)
+       failure:
+       missing:
+       validation:
+     image: # See [Step image](#image)
+     name:
+     parallel: # See [Parallel steps](#parallel)
+     script:
+     source: # See [Source files](#source)
+       dockerignore:
+       exclude:
+       include:
+       location:
+       omit:
+     step: # See [Step image](#image)
+ - run: # See [Run steps](#run)
+     dockerfile: # See [Using Dockerfiles](#dockerfiles)
+     ignoreErrors: # See [Error handling](#errors)
+       failure:
+       missing:
+       validation:
+     image: # See [Step image](#image)
+     name:
+     parallel: # See [Parallel steps](#parallel)
+     script:
+     source: # See [Source files](#source)
+       dockerignore:
+       exclude:
+       include:
+       location:
+       omit:
+     step: # See [Step image](#image)
+ - service: # See [Services](#services)
+     dockerfile: # See [Using Dockerfiles](#dockerfiles)
+     ignoreErrors: # See [Error handling](#errors)
+       failure:
+       missing:
+       validation:
+     image: # See [Step image](#image)
+     name:
+     script:
+     source: # See [Source files](#source)
+       dockerignore:
+       exclude:
+       include:
+       location:
+       omit:
+     step: # See [Step image](#image)
+variables: # See [Workflow variables](#variables)
+ - name:
+   value:
+ - ...
 ```
+
