@@ -10,13 +10,15 @@
         url: '#use'
       - title: How does Sandbox work?
         url: '#how'
+      - title: How do I contribute?
+        url: '#contribute'
       - title: How do I get started?
         url: '#start'
   - title: Getting started
     url: /docs/getting-started
   - title: Installing Sandbox
     url: /docs/installing
-- title: Language-specific guides
+- title: Language-specific quick starts
   items:
   - title: Javascript
     subItems:
@@ -62,14 +64,14 @@
     subItems:
     - title: Build and run apps with Maven
       url: /docs/maven
-- title: Deeper Dive
+- title: Deeper dive
   items:
-  - title: Sandbox bootstrapping
+  - title: Bootstrapping
     url: /docs/bootstrapping
+  - title: Architecture
+    url: /docs/architecture
   - title: Sandbox for Docker users
     url: /docs/docker
-  - title: Sandbox for Kubernetes users
-    url: /docs/kubernetes
 - title: Reference
   items:
   - title: Workflows
@@ -77,38 +79,42 @@
     subItems:
       - title: Workflow files
         url: '#files'
-      - title: Run steps
-        url: '#run'
-      - title: Services
-        url: '#services'
-      - title: Ports
-        url: '#ports'
-      - title: Service readiness
-        url: '#readiness'
-      - title: Service health
-        url: '#health'
-      - title: Step image
+      - title: Steps (`steps`)
+        url: '#steps'
+      - title: Step image (`image` and `step`)
         url: '#image'
-      - title: Source files
+      - title: Source files (`source`)
         url: '#source'
-      - title: Caching step images
-        url: '#cache'
-      - title: Environment variables
-        url: '#environment'
-      - title: Volumes
-        url: '#volumes'
-      - title: Error handling
-        url: '#errors'
-      - title: Parallel steps
-        url: '#parallel'
-      - title: Compound steps
-        url: '#compound'
-      - title: Calling external workflows
-        url: '#external'
-      - title: Running generated workflows
-        url: '#generated'
-      - title: Using a Dockerfile
+      - title: Using Dockerfiles (`dockerfile`)
         url: '#dockerfile'
+      - title: Run steps (`run`)
+        url: '#run'
+      - title: Services (`service`)
+        url: '#services'
+      - title: Ports (`ports`)
+        url: '#ports'
+      - title: Service readiness (`readiness`)
+        url: '#readiness'
+      - title: Service health (`health`)
+        url: '#health'
+      - title: Caching step images (`cache`)
+        url: '#cache'
+      - title: Environment variables (`environment`)
+        url: '#environment'
+      - title: Volumes (`volumes`)
+        url: '#volumes'
+      - title: Error handling (`ignoreErrors`)
+        url: '#errors'
+      - title: Parallel steps (`parallel`)
+        url: '#parallel'
+      - title: Compound steps (`compound`)
+        url: '#compound'
+      - title: Running external workflows (`external`)
+        url: '#external'
+      - title: Running generated workflows (`generator`)
+        url: '#generated'
+      - title: YAML index
+        url: '#index'
   - title: CLI (Command Line Interface)
     url: /docs/cli
     subItems:

@@ -1,4 +1,4 @@
-# Sandbox bootstrapping
+# Bootstrapping
 
 In order to allow you to run workflows on any machine with just a few tiny binaries, Sandbox performs a "bootstrapping" step when you run it for the first time on a machine. Let's examine what happens when you run a workflow using a command like `sbox run functional-tests`:
 

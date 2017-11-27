@@ -2,7 +2,7 @@
 
 Sandbox is released as a Zip file containing a set of cross-platform binaries and scripts. You can download the Zip from the [Downloads](/downloads) page.
 
-Installing Sandbox is done by extracting this Zip file into your project's root directory. Sandbox is designed to live together with your project, and to be committed into your project's repo. That means that anyone that checks out your repo has access to Sandbox, without needing to download it themselves. Sandbox is tiny: all the files contained in the Zip file are less than 200KB. The small size means you can commit Sandbox to your repo without being concerned about the impact on your repo size.
+Installing Sandbox is done by extracting this Zip file into your project's root directory. Sandbox is designed to live together with your project, and to be committed into your project's repo. That gives anyone that checks out your repo access to Sandbox, without needing to download it themselves. Sandbox is tiny: all the files contained in the Zip file are less than 200KB. The small size means you can commit Sandbox to your repo without being concerned about the impact on your repo size.
 
 When you extract the Zip, you will see the following files:
 
