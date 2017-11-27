@@ -580,7 +580,7 @@ In this simple example, the `httpPort` and `mysqlPort` variables will not be pas
 
 When a workflow that is called finishes, the values of all variables in the workflow that was called are copied back to the calling workflow. Again, the `excludeVariables` property can be used to exclude variables.
 
-## Running generated workflows
+## Running generated workflows [](#generator)
 
 Sandbox also allows you to specify a step that generates a workflow, and then run the generated workflow. This is done using the `generator` property, which is used instead of the `script` property (see [Step script](http://localhost:8080/#!/#script)).
 

@@ -21,6 +21,9 @@
 - title: Language-specific quick starts
   items:
   - title: Javascript
+    active:
+      - '/docs/nodejs'
+      - '/docs/webpack-guide'
     subItems:
     - title: Build and run Node.js apps
       url: '/docs/nodejs'
@@ -60,10 +63,7 @@
             url: '#first-workflow-hot-reload'
       - title: Adding a build workflow
         url: '#build-workflow'
-  - title: Java
-    subItems:
-    - title: Build and run apps with Maven
-      url: /docs/maven
+  - title: Java (Coming soon!)
 - title: Deeper dive
   items:
   - title: Bootstrapping
@@ -81,14 +81,14 @@
         url: '#files'
       - title: Steps (`steps`)
         url: '#steps'
+      - title: Run steps (`run`)
+        url: '#run'
       - title: Step image (`image` and `step`)
         url: '#image'
       - title: Source files (`source`)
         url: '#source'
       - title: Using Dockerfiles (`dockerfile`)
-        url: '#dockerfile'
-      - title: Run steps (`run`)
-        url: '#run'
+        url: '#dockerfiles'
       - title: Services (`service`)
         url: '#services'
       - title: Ports (`ports`)
@@ -118,15 +118,17 @@
   - title: CLI (Command Line Interface)
     url: /docs/cli
     subItems:
-      - title: Running workflows
+      - title: Running workflows (`run`)
         url: '#run'
-      - title: Initializing a project
+      - title: Initializing a project (`init`)
         url: '#init'
       - title: Project layout
         url: '#layout'
-      - title: Listing workflows
+      - title: Listing workflows (`list`)
         url: '#list'
       - title: Cluster status and management
         url: '#management'
+      - title: Debugging sandbox (`--debug`)
+        url: '#debug'
       - title: Using mirrors
         url: '#mirrors'

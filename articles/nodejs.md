@@ -1,10 +1,10 @@
-## Quick Start
+## Build and run Node.js apps
 
 {className:alert}This quick start guide will quickly introduce you to Sandbox, and get you started running workflows in a matter of minutes.
 
 You can also watch a short [Introduction to Sandbox](https://www.youtube.com/watch?v=RwMl-vy-1Vs) video, which covers many of the same concepts as this quick start guide.
 
-## Running your first workflow []('#run')
+## Running your first workflow [](#run)
 
 One of the key benefits Sandbox gives you is the ability to run automated workflows straight from Git, without needing to install any other software. You can experience this for yourself by cloning a Git repository we created to serve as an example.
 
@@ -30,9 +30,7 @@ This will do the following:
 
 The `dev-server` workflow starts a MongoDB database, an HTTP server, and an example web application (within containers). You will be able to watch as the example application starts up because Sandbox will show you console output during the workflow execution. Because the `dev-server` workflow launches a long-running application, the application will stay open until the workflow is manually interrupted (using `CTRL` + `C`).
 
-## {translate('TITLE_START_VM')}
-
-<a id="{'vm'}"></a>
+## Accessing the Sandbox VM [](#vm)
 
 Now that the `dev-server` workflow started an application, we need to be able to access it. Sandbox will start the containers on the Sandbox virtual machine (VM), and so the ports opened by the application will be opened on that VM's IP. So, let's first get the IP of the VM - in a new terminal window, run:
 
@@ -48,52 +46,49 @@ With this IP, we can now access `http://{'{'}Sandbox VM IP{'}'}:31000`, which is
 
 That's it! You have now connected to the containerized web application that Sandbox started! Notice that you had to perform no setup or configuration - Sandbox performed all the work necessary to setup the environment for the application. It was all part of Sandbox running your first workflow.
 
-## {translate('TITLE_START_WORKFLOW')}
-
-<a id="{'workflow'}"></a>
+## A look at workflow files [](#workflow)
 
 The `dev-server` workflow that we just ran can be found at `{'{'}project root{'}'}/workflows/dev-server.wflow`. It's just a YAML file:
 
 ```yaml
 steps:
-  - name: Launch Mongo
-    [...]
-  - name: Install application
-    [...]
-  - name: Run application
-    [...]
+  - service:
+      name: Launch Mongo
+      [...]
+  - run:
+      name: Install application
+      [...]
+  - run:
+      name: Run application
+      [...]
 ```
 
 Workflows are just sequential list of steps to run. This particular workflow has three steps: `Launch Mongo`, `Install application` and `Run application`. We'll take a look at these steps in a little more detail in the sections that follow.
 
 Workflow files are explained in more detail [in their own dedicated section](/docs/workflows).
 
-## {translate('TITLE_START_SERVICES')}
-
-<a id="{'services'}"></a>
+## Service steps [](#services)
 
 The first step - the `Launch Mongo` step - is a [service step](/docs/workflows#services). Let's take a look at it in more detail:
 
 ```yaml
-- name: Launch Mongo
-  image: 'mongo:jessie'
-  ports:
-    - name: mongo
-      containerPort: 27017
-      internalPort: 27017
-  type: service
-  readiness:
-    type: tcp
-    port: 27017
+- service:
+    name: Launch Mongo
+    image: 'mongo:jessie'
+    ports:
+      - name: mongo
+        containerPort: 27017
+        internalPort: 27017
+    readiness:
+      type: tcp
+      port: 27017
 ```
+
+This step is a **service** step, meaning it starts a long-running service that can be accessed by other steps. In practice, this means that Sandbox will not wait for this step to complete before moving on - service steps are generally meant to run indefinitely, as is the case for this database service.
 
 ### **image** field
 
 Defines the Docker image to use - here, we are using a Docker image with MongoDB pre-installed.
-
-### **type** field
-
-Specifies that this step is a service step, meaning it starts a long-running service that can be accessed by other steps. In practice, this means that Sandbox will not wait for this step to complete before moving on - service steps are generally meant to run indefinitely, as is the case for this database service.
 
 ### **readiness** field
 
@@ -103,30 +98,29 @@ Used to define when the service should be considered ready. In this case, we ass
 
 Defines ports to be exposed. For this service, we expose port `27017` internally to the cluster under the same port number. We also specify the name `mongo` to the port, to allow it to be discovered by other steps, as we'll see in the next step definition.
 
-## {translate('TITLE_START_CACHING')}
-
-<a id="{'caching'}"></a>
+## Caching steps [](#caching)
 
 The second step - the `Install application` step - is [cached](/docs/workflows#cache), and will not be re-run if no changes occur to the relevant project source files. Let's examine this step:
 
 ```yaml
-- name: Install application
-  image: 'node:8-alpine'
-  cache: true
-  dockerignore: dockerignoreForNpmInstall
-  script: |-
-    apk update && apk add git
-    cd app
-    npm install
+- run
+    name: Install application
+    image: 'node:8-alpine'
+    cache: true
+    source:
+      include: 
+        - package.json
+    script: |-
+      apk update && apk add git
+      cd app
+      npm install
 ```
+
+This is a **run** step, meaning this step will run until completion, blocking any further steps.
 
 ### **image** field
 
 As before, defines a Docker image to use - here, we are using an image with Node.js pre-installed.
-
-### **type** field
-
-Since it is not present, it defaults to `sequential`, meaning this step will run until completion, blocking any further steps.
 
 ### **cache** field
 
@@ -136,20 +130,18 @@ Enables caching for this step - if no changes occur to the relevant project sour
 
 Defines what gets run in the step. In this case, we are running `npm install`, and installing some other dependencies specific to this project using `apk`. This is a lengthy process, which is why this step is cached.
 
-### **dockerignore** field
+### **source** field
 
-Defines a specific file to use as the `dockerignore` file for this step. The `dockerignore` file defines which project source files should be excluded when building the image for this step (normally, they are all included). This is important in this step, as the files included will determine cache validity. The `dockerignoreForNpmInstall` file referenced here excludes most of the project source files, except for `package.json` so that only changes to `package.json` will invalidate the install step cache.
+Defines how to handle including source files. By default, a step includes all the source files in your project, under `/app`, using the `dockerignore` file to filter these files, if it exists. In this case, the `source.include` field defines that **only** `package.json` will be included. This is important in this step, as the files included will determine cache validity.THis way only changes to `package.json` will invalidate the install step cache.
 
-## {translate('TITLE_START_PREVIOUS')}
-
-<a id="{'previous'}"></a>
+## Previous step images [](#previous)
 
 The final step - the `Run application` step - uses the final state of the container from the [previous step as it's starting image](/docs/workflows#previous). Let's look at this step:
 
 ```yaml
-- name: Run application
-    image: Install application
-    imageSource: step
+- run:
+    name: Run application
+    step: Install application
     script: |-
       cd app
       export PORT=31000
@@ -166,13 +158,11 @@ The final step - the `Run application` step - uses the final state of the contai
         externalPort: 31000
 ```
 
-### **image** field
+Again, this is a **run** step, meaning it will run until completion and block the workflow from continuing.
 
-References a previous step - the `Install Application` step. We use a (cached) image with all dependencies pre-installed. In order to tell Sandbox this is a reference to a previous step, we need to set the `imageSource` field to `step` (it defaults to `image`).
+### **step** field
 
-### **type** field
-
-Again, defaults to `sequential`, meaning it will run until completion and block the workflow from continuing.
+References a previous step - the `Install Application` step. We use a (cached) image with all dependencies pre-installed. Note that `step` is mutually exclusive to `image`, which would define a docker image to use.
 
 ### **script** field
 
