@@ -425,32 +425,74 @@ As the example shows, `file` entries can be mixed together with `name`-`value` p
 
 ## Workflow variables [](#variables)
 
-Workflow variables are set using the `variables` sequence, and can be used throughout the workflow file, allowing for sharing of variables across steps.
+Within the context of a workflow, Sandbox maintains a global set of workflow variables. You can use these variables within the values for most step properties in your workflow. Initial values for variables are set using the `variables` sequence, and can be used throughout the workflow file, allowing for sharing of variables across steps.
 
-The following example shows usage of defined variables in a step:
+The following example shows usage of variables in a step:
 
 ```yaml
 variables:
- - applicationPortInt: 3000
- - applicationPortExt: 30080
+ - name: applicationPortInt
+   value: 3000
+ - name: applicationPortExt
+   value: 30080
 steps:
   - run:
     name: Run Application
     ports:
       - name: appPort
-        container: $applicationPortInt
-        external: $applicationPortExt
+        container: ${applicationPortInt}
+        external: ${applicationPortExt}
 ```
+
+Along with name and value pairs as shown, Sandbox can pick up inital values for workflow variables from files specified using file entries:
+variables:
+
+```yaml
+variables:
+ - file: database-props.env
+steps:
+  ...
+```
+
+The value of workflow variables can also be set from a step script. In order to do this, the script needs to write a line to stdout using the following format: `variableName=Variable` value, where `variableName` is the name of the variable to set. Everything after the equals sign till the end of that line in stdout will be set as the variable value. Note that the name of the variable has to be the first character on the line.
+For example, consider the following workflow:
+
+```yaml
+variables:
+- name: variable1
+- name: variable 2
+  value: default
+steps:
+- run:
+    image: node:latest
+    script: |
+      npm install
+      set-variables.sh
+```
+
+Running this workflow produces the following output:
+
+```
+npm install
++-- @types/classnames@2.2.3
++-- @types/dragula@2.1.32
++-- @types/react-dom@15.5.4
+set-variables.sh
+variable1=Test value
+variable2=Test value 2
+```
+
+After running this step, the workflow variable `variable1` will have the value `Test value` and `variable2` will have the value `Test value 2`. Note that these have overridden any previous values that were set for those variables.
 
 ## CLI parameters [](#cli-parameters)
 
-Workflows also accept positional parameters when called from the CLI. In the workflow, positional paramenters are called using the patern `$argX`. The same example as before, written to use positional parameters, would be:
+Workflows also accept positional parameters when called from the CLI. In the workflow, positional parameters are called using the pattern `$argX`. The same example as before, written to use positional parameters, would be:
 
 ```yaml
 steps:
-  - run:
-    name: Run Application
-    ports:
+ - run:
+     name: Run Application
+     ports:
       - name: appPort
         container: $arg0
         external: $arg1
@@ -587,56 +629,60 @@ Sandbox waits for any and all parallel steps within a compound step to complete 
 
 It should be noted that any sequential steps within compound steps run sequentially as you would expect them to. [Services](#services) within compound steps wait till they are ready as you would expect them to.
 
-## Calling external workflows [](#external)
+## Running external workflows [](#external)
 
-Workflows can be composed together by having a step that calls another workflow - the `target` property is used to specify the name of a workflow to call:
+Workflows can be composed together by having a step that calls another workflow - the `external` key is used to specify a step which calls another workflow. You can specify the name of a workflow to call using the `workflow` key:
 
 ```
 steps:
-- name: Build application
-  target: Build app
-- name: Run application
-  target: Run app
+- external:
+    name: Build application
+    workflow: build-app
+- external:
+    name: Run application
+    workflow: run-app
 ```
 
-This simple workflow is composed of calls to two other workflows. The first step calls the `Build app` workflow. Note that this will run the workflow in the `Build app.wflow` file in the project's `workflows` directory. After the `Build app` workflow finishes, the control returns to this workflow, and the next step is run. In this case, the next step is to run the `Run app` workflow.
+This simple workflow is composed of calls to two other workflows. The first step calls the `build-app` workflow. Note that this will run the workflow in the `build-app.yml` file in the project's `workflows` directory. After the `build-app` workflow finishes, the control returns to this workflow, and the next step is run. In this case, the next step is to run the `run-app` workflow.
 
-When calling workflows, all the workflow variables from the current workflow are made available to the workflow being called. Any initial variables the workflow being called defines will be overwritten. In some cases, you may want to preserve the initial state of variables set by the workflow being called. You can preserve these variables by using the `excludeVariables` property:
+When calling workflows, all the workflow variables from the current workflow are made available to the workflow being called. Any initial variables the workflow being called defines will be overwritten. In some cases, you may want to preserve the initial state of variables set by the workflow being called. You can preserve these variables by using the `variables` property:
 
 ```
 variables:
 - httpPort: 8080
 steps:
-- name: Run application
-  type: call
-  target: Run app
-  excludeVariables:
-    - httpPort
-    - mysqlPort
+- external:
+    name: Run application
+    workflow: Run app
+    variables:
+      exclude:
+        - httpPort
+        - mysqlPort
 ```
 
-In this simple example, the `httpPort` and `mysqlPort` variables will not be passed to the `Run app` workflow that is being called.
+In this simple example, the `httpPort` and `mysqlPort` variables will not be passed to the `run-app` workflow that is being called. Similarly, an `include` key can be used to include only certain variables.
 
-When a workflow that is called finishes, the values of all variables in the workflow that was called are copied back to the calling workflow. Again, the `excludeVariables` property can be used to exclude variables.
+When a workflow that is called finishes, the values of all variables in the workflow that was called are copied back to the calling workflow. Again, the `variables` property can be used to include and exclude specific variables.
 
 ## Running generated workflows [](#generator)
 
-Sandbox also allows you to specify a step that generates a workflow, and then run the generated workflow. This is done using the `generator` property, which is used instead of the `script` property (see [Step script](http://localhost:8080/#!/#script)).
+Sandbox also allows you to specify a step that generates a workflow, and then run the generated workflow. This is done using the `generator` key to define a generator step. Most of the properties available for [run steps](#run) are available for `generator` steps:
 
 ```
 steps:
-- name: Generate and run workflow
-  generator: workflow-generator.sh
-  environment:
-    - name: HTTP_PORT
-      value: 8080
+- generator:
+    name: Generate and run workflow
+    script: workflow-generator.sh
+    environment:
+     - name: HTTP_PORT
+       value: 8080
 ```
 
-In this example, the `workflow-generator.sh` script within the project source directory is expected to generate a workflow, which will then be run by Sandbox. Note that most of the other properties available in a step that executes a script are available to steps that generate workflows. In this example, the `environment` property is used to set environment variables on the Docker container in which the generator script is run.
+In this example, the `workflow-generator.sh` script within the project source directory is expected to generate a workflow, which will then be run by Sandbox. Note that most of the other properties available in `run` steps are available to steps that generate workflows. In this example, the `environment` property is used to set environment variables on the Docker container in which the generator script is run.
 
 Sandbox expects the generator script to write the generated workflow YAML to stdout. The generated YAML should be preceded with a line that has the text `workflow {` and followed by a line with the text `}`. Sandbox will consider all lines in between those marking lines as the YAML content of the workflow.
 
-The rules for variables that apply to calling other workflows (see [Calling other workflows](http://localhost:8080/#!/#calling)) also apply when Sandbox runs a generated workflow. In particular, the `excludeVariables` can be used to exclude variables copied between the workflow boundaries.
+The rules for variables that apply to calling other workflows (see [Running external workflows](http://localhost:8080/#!/#calling)) also apply when Sandbox runs a generated workflow. In particular, the `variables` key can be used to include and exclude variables copied between the workflow boundaries.
 
 ## YAML index [](#index)
 
