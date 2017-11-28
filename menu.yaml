@@ -72,6 +72,15 @@
     url: /docs/architecture
   - title: Sandbox for Docker users
     url: /docs/docker
+    subItems:
+      - title: Building from source
+        url: '#source'
+      - title: Mounting host volumes
+        url: '#volumes'
+      - title: More powerful health checks
+        url: '#health'
+      - title: Docker for daily development
+        url: '#daily'
 - title: Reference
   items:
   - title: Workflows

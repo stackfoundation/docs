@@ -18,7 +18,7 @@ Once you have a high level overview of Sandbox, the language-specific quick star
   - [Build and run Node.js apps](/docs/nodejs)
   - [Hot reload with webpack](/docs/webpack)
 * Java
-  - [Build and run apps with Maven](/docs/maven)
+  - Build and run apps with Maven *(Coming soon)*
 
 The guides also point to several sample Git repositories that you can explore.
 

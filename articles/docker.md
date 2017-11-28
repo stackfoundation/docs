@@ -4,12 +4,12 @@ If you are already a Docker user, Sandbox will make your life with Docker even e
 
 We'll start by showing how Sandbox provides some additional conveniences in dealing with Docker in 3 specific areas:
 * Building from source
-* Mounting volumes
+* Mounting host volumes
 * Health checks for services
 
-Then, we'll see how taken together, these additional conveniences allow you to think differently about how you use Docker for daily development tasks.
+Finally, we'll see how these additional conveniences, taken together with the ability to bootstrap Docker and Kubernetes immediately upon checkout means that Sandbox allows you to go further with Docker for daily development tasks.
 
-## Building from source
+## Building from source [](#source)
 
 If you can find an existing Docker image that contains the exact environment you need, you can immediately issue a `docker run` command. However, if you need to make small tweaks to an existing image, you will find yourself having to create a Dockerfile. This is not an uncommon scenario. Consider a quick example Dockerfile that would be used for building Node.js applications: 
 
@@ -52,7 +52,7 @@ Running step 1:
 
 You can see Sandbox shows you the output from building the image from the Dockerfile, and the script that is run in the second step. Note that we can directly do a `npm install` because by default Sandbox adds all files from the project directory into the image at the location `/app` (all of this can be customized).
 
-## Mounting volumes
+## Mounting host volumes [](#volumes)
 
 As a Docker user, you also know that mounting host directories as volumes can be very useful to get artifacts produced in a container. If you use Docker for development tasks, it's a great way to get at build artifacts produced by a build, or test reports from a test run. Normally, when you want to bind mount a host path as a volume in Docker, you add an argument to the `docker run` command. If you do this regularly, it can be frustrating to have to pass in the volume flag.
 
@@ -76,7 +76,7 @@ steps:
 
 Now, when you run the workflow using a command like `sbox run node npm run build`, it will perform an `npm run build`. In this example, that would build artifacts within the `/app/dist` directory. Because we mounted the `dist` directory inside the project as a volume at that location, we can easily get at the build artifacts produced in the `dist` folder.
 
-## More powerful health checks
+## More powerful health checks [](#health)
 
 Finally, let's talk about health checks. If you use Docker Compose, you know that you can compose together a set of services runinng within their own containers. If you have experience with services, you probably also have experience trying to deal with those services inside containers being ready. For example, if you start a MySQL service within a container, you have to wait for the MySQL service to be ready before you can use it. For those of you with more experience, you probably are aware that you can create health checks for your services using a `HEALTHCHECK` Dockerfile instruction or the `healthcheck` key in a compose file. However, 
 
@@ -97,20 +97,12 @@ steps:
 
 The step shown here starts a long-running service using an official Docker MySQL image. It then waits till a connection can be established to TCP port 3306. The workflow will proceed to subsequent steps only after the service is readiness using that health check.
 
-## Reproducible and shareable tasks
+## Docker for daily development [](#daily)
 
-Each of the conveniences described above are relatively minor. But taken together, they allow you to think differently about your daily development tasks.
+Sandbox is released as a set of tiny binaries that can be checked into your Git repo, and are available immediately upon checkout. From these tiny binaries, Sandbox will bootstrap Docker and Kubernetes on any machine. This means that if you commit Sandbox and your workflows to your repo, your daily development tasks are immediately available for anyone upon checkout. Taken together, all of these conveniences make it more straightforward to use Docker your daily development tasks because:
 
-As a Docker user, you know that Docker containers are great for reproducing runtime environments. If you have a Docker image, running a container is as simple as issuing a `docker run` command.
+ - You don't have to worry about other developers setting up a Docker environment
+ - You don't have to worry about building Dockerfiles into images before using them
+ - You don't have to worry about providing "glue" to tie all the pieces together - just run the workflows!
 
-Sandbox takes this further by giving you the following additional conveniences:
-
-
- But for reproducing development environments, there are 
-
- Docker images allow you to capture all of the dependencies, configuration and artifacts your applicaton needs.
-
-
-Let's start with what you would do to get started with Docker. You would create your own Dockerfile to include the packages.
-
-
+Sandbox gives you consistently reproducible tasks and environments for your local development.
