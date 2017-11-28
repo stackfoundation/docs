@@ -40,7 +40,7 @@
         url: '#caching'
       - title: Previous step images
         url: '#previous'
-    - title: Hot reload with webpack
+    - title: Hot reload with Webpack
       url: '/docs/webpack-guide'
       subItems:
       - title: Project Setup
