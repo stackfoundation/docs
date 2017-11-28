@@ -1,6 +1,8 @@
-# Getting started with Webpack and Sandox [](#getting-started)
+# Hot Reload with Webpack and Sandox [](#getting-started)
 
-In this guide we'll be exploring how to leverage containers using the Sandbox tool when developing a javacript application using webpack. Most of these examples are applicable to all situations, though. We'll be using as a base webpack's [Getting Started Guide] (https://webpack.js.org/guides/getting-started/), modified to add webpack-dev-server, a common tool used when developing using webpack.
+In this guide we'll be exploring how to leverage containers using the Sandbox tool when developing a javacript application using webpack, and focusing on creating a **usable and useful development platform** using Sandbox - a contanerizzed solution you can use while developing your app, with hot reload.
+
+Most of these examples are applicable to all situations, though. We'll be using as a base webpack's [Getting Started Guide] (https://webpack.js.org/guides/getting-started/), modified to add webpack-dev-server, a common tool used when developing using webpack.
 
 ## Project Setup [](#setup)
 

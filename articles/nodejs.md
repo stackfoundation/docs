@@ -1,4 +1,4 @@
-## Build and run Node.js apps
+## Sandbox in 5 minutes using Node.js
 
 {className:alert}This quick start guide will quickly introduce you to Sandbox, and get you started running workflows in a matter of minutes.
 
@@ -8,7 +8,7 @@ You can also watch a short [Introduction to Sandbox](https://www.youtube.com/wat
 
 One of the key benefits Sandbox gives you is the ability to run automated workflows straight from Git, without needing to install any other software. You can experience this for yourself by cloning a Git repository we created to serve as an example.
 
-To get started, clone our example repository:≈
+To get started, clone our example repository:
 
 ```bash
 git clone https://github.com/stackfoundation/sbox-mean

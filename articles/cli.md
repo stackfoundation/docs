@@ -16,7 +16,7 @@ The name of the workflow is the first argument passed after the `run` command. A
 sbox run functional-tests arg0 arg1 arg2 [...]
 ```
 
-See [the section on workflows](/docs/workflows) to know how to define and use these arguments in your workflow.
+See [the section on workflows](/docs/workflows#cli-parameters) to know how to define and use these arguments in your workflow.
 
 ## Initializing a project (`init`)[](#init)
 

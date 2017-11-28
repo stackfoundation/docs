@@ -423,6 +423,45 @@ steps:
 
 As the example shows, `file` entries can be mixed together with `name`-`value` pairs.
 
+## Workflow variables [](#variables)
+
+Workflow variables are set using the `variables` sequence, and can be used throughout the workflow file, allowing for sharing of variables across steps.
+
+The following example shows usage of defined variables in a step:
+
+```yaml
+variables:
+ - applicationPortInt: 3000
+ - applicationPortExt: 30080
+steps:
+  - run:
+    name: Run Application
+    ports:
+      - name: appPort
+        container: $applicationPortInt
+        external: $applicationPortExt
+```
+
+## CLI parameters [](#cli-parameters)
+
+Workflows also accept positional parameters when called from the CLI. In the workflow, positional paramenters are called using the patern `$argX`. The same example as before, written to use positional parameters, would be:
+
+```yaml
+steps:
+  - run:
+    name: Run Application
+    ports:
+      - name: appPort
+        container: $arg0
+        external: $arg1
+```
+
+And would be called using:
+
+```bash
+sbox run workflow 3000 30080
+```
+
 ## Volumes [](#volumes)
 
 By default, files in the workflow's project directory are added to the step image as described in [source files](#source). Among other things, this means any changes made to these files from within the container won't be reflected on the files in the project directory on the host. If a directory is mounted as a volume instead, changes made to the files from within the container will be reflected to the files on your host as well. Each volume is configured with the following keys:

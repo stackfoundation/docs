@@ -25,7 +25,7 @@
       - '/docs/nodejs'
       - '/docs/webpack-guide'
     subItems:
-    - title: Build and run Node.js apps
+    - title: Sandbox in 5 minutes
       url: '/docs/nodejs'
       subItems:
       - title: Running your first workflow
@@ -101,6 +101,10 @@
         url: '#cache'
       - title: Environment variables (`environment`)
         url: '#environment'
+      - title: Workflow variables (`variables`)
+        url: '#variables'
+      - title: Cli parameters
+        url: '#cli-parameters'
       - title: Volumes (`volumes`)
         url: '#volumes'
       - title: Error handling (`ignoreErrors`)
